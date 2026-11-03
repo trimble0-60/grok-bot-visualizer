@@ -1,0 +1,27 @@
+{
+  "name": "grok-bot-visualizer",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "build:single": "tsc --noEmit && vite build --config vite.single.config.ts && node scripts/check-single-file.mjs",
+    "preview": "vite preview --host"
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "^1.1.4",
+    "@fontsource-variable/outfit": "^5.2.8",
+    "@xyflow/react": "^12.9.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.26",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.1",
+    "vite-plugin-singlefile": "^2.3.4"
+  }
+}

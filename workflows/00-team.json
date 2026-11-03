@@ -1,0 +1,102 @@
+{
+  "id": "team",
+  "title": "The team",
+  "description": "Alex sets direction and approves anything that leaves the team. The Chief of Staff coordinates, and the other bots take a task and hand status back.",
+  "summaryCount": "5 people and bots",
+  "direction": "TB",
+  "people": [
+    { "id": "alex", "name": "Alex", "role": "Approver", "color": "#E7C27A" }
+  ],
+  "bots": [
+    { "id": "chief-of-staff", "name": "Chief of Staff", "color": "#55B5A3", "avatar": "/avatars/chief.png", "role": "Coordinates the team", "icon": "compass" },
+    { "id": "research", "name": "Research", "color": "#59BE77", "avatar": "/avatars/research.png", "role": "Writes sourced briefs", "icon": "book" },
+    { "id": "scout", "name": "Scout", "color": "#EC7332", "avatar": "/avatars/scout.png", "role": "Finds leads", "icon": "search" },
+    { "id": "writer", "name": "Writer", "color": "#59BE77", "avatar": "/avatars/content.png", "role": "Drafts notes", "icon": "pen" }
+  ],
+  "nodes": [
+    {
+      "id": "alex",
+      "type": "approval",
+      "owners": ["alex"],
+      "title": "Alex",
+      "summary": "Sets direction and approves",
+      "steps": [
+        "Sets direction for the team.",
+        "Approves anything sent outside.",
+        "Reviews decisions the Chief of Staff escalates."
+      ],
+      "inputs": ["Decisions and status from the Chief of Staff"],
+      "outputs": ["Approvals and direction"],
+      "stopsForUser": false,
+      "usesTool": false,
+      "appearsIn": ["The team", "Research brief", "Outreach note", "Status board"]
+    },
+    {
+      "id": "chief",
+      "type": "task",
+      "owners": ["chief-of-staff"],
+      "title": "Chief of Staff",
+      "summary": "Coordinates the team",
+      "steps": [
+        "Coordinates the team.",
+        "Collects status.",
+        "Escalates decisions to Alex."
+      ],
+      "inputs": ["Direction from Alex", "Status from the bots"],
+      "outputs": ["Delegated tasks", "Decisions for Alex"],
+      "stopsForUser": false,
+      "usesTool": false,
+      "appearsIn": ["The team", "Research brief", "Outreach note", "Status board"]
+    },
+    {
+      "id": "research",
+      "type": "task",
+      "owners": ["research"],
+      "title": "Research",
+      "summary": "Writes sourced briefs",
+      "steps": ["Search public sources.", "Write a short sourced brief.", "Hand it back to the Chief of Staff."],
+      "inputs": ["A research request"],
+      "outputs": ["A sourced brief"],
+      "stopsForUser": false,
+      "usesTool": true,
+      "tools": ["Web", "News and reports"],
+      "appearsIn": ["The team", "Research brief", "Outreach note", "Status board"]
+    },
+    {
+      "id": "scout",
+      "type": "task",
+      "owners": ["scout"],
+      "title": "Scout",
+      "summary": "Finds leads",
+      "steps": ["Look for promising leads.", "Pass the strongest ones to Research."],
+      "inputs": ["A scouting request"],
+      "outputs": ["A short list of leads"],
+      "stopsForUser": false,
+      "usesTool": false,
+      "appearsIn": ["The team", "Outreach note"]
+    },
+    {
+      "id": "writer",
+      "type": "task",
+      "owners": ["writer"],
+      "title": "Writer",
+      "summary": "Drafts notes",
+      "steps": ["Draft the note.", "Leave it unsent until Alex approves."],
+      "inputs": ["An approved brief"],
+      "outputs": ["A draft note"],
+      "stopsForUser": false,
+      "usesTool": false,
+      "appearsIn": ["The team", "Outreach note", "Status board"]
+    }
+  ],
+  "edges": [
+    { "from": "alex", "to": "chief", "label": "direction", "kind": "always" },
+    { "from": "chief", "to": "alex", "label": "decisions and status", "kind": "always" },
+    { "from": "chief", "to": "research", "label": "research request", "kind": "always" },
+    { "from": "research", "to": "chief", "label": "sourced brief", "kind": "always" },
+    { "from": "chief", "to": "scout", "label": "scouting request", "kind": "always" },
+    { "from": "scout", "to": "chief", "label": "leads", "kind": "always" },
+    { "from": "chief", "to": "writer", "label": "draft request", "kind": "always" },
+    { "from": "writer", "to": "chief", "label": "draft note", "kind": "always" }
+  ]
+}

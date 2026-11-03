@@ -1,0 +1,123 @@
+{
+  "id": "outreach",
+  "title": "Outreach note",
+  "description": "Scout finds a lead. Research writes a short brief. The Chief of Staff asks Alex before Writer drafts a note, and the note stays unsent until Alex says to send it.",
+  "people": [
+    { "id": "alex", "name": "Alex", "role": "Approver", "color": "#E7C27A" }
+  ],
+  "bots": [
+    { "id": "scout", "name": "Scout", "color": "#EC7332", "avatar": "/avatars/scout.png", "role": "Finds leads", "icon": "search" },
+    { "id": "research", "name": "Research", "color": "#59BE77", "avatar": "/avatars/research.png", "role": "Writes sourced briefs", "icon": "book" },
+    { "id": "chief-of-staff", "name": "Chief of Staff", "color": "#55B5A3", "avatar": "/avatars/chief.png", "role": "Coordinates the team", "icon": "compass" },
+    { "id": "writer", "name": "Writer", "color": "#59BE77", "avatar": "/avatars/content.png", "role": "Drafts notes", "icon": "pen" }
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "owners": [],
+      "title": "Look for leads",
+      "summary": "A new search begins.",
+      "steps": ["Start a search for leads."],
+      "inputs": ["A search"],
+      "outputs": ["Work for Scout"],
+      "stopsForUser": false,
+      "usesTool": false
+    },
+    {
+      "id": "find",
+      "type": "task",
+      "owners": ["scout"],
+      "title": "Find leads",
+      "summary": "Keep only the strong ones",
+      "steps": ["Search for leads.", "Drop the weak ones.", "Hand the rest to Research."],
+      "inputs": ["A search"],
+      "outputs": ["Strong leads"],
+      "stopsForUser": false,
+      "usesTool": false
+    },
+    {
+      "id": "brief",
+      "type": "task",
+      "owners": ["research"],
+      "title": "Brief the lead",
+      "summary": "Sources stay attached",
+      "steps": ["Read public sources.", "Write a one-page brief."],
+      "inputs": ["A strong lead"],
+      "outputs": ["A sourced brief"],
+      "stopsForUser": false,
+      "usesTool": true,
+      "tools": ["Web", "News and reports"]
+    },
+    {
+      "id": "surface",
+      "type": "task",
+      "owners": ["chief-of-staff"],
+      "title": "Surface the brief",
+      "summary": "Asks Alex before any note",
+      "steps": ["Put the brief in front of Alex.", "Hold every note."],
+      "inputs": ["A sourced brief"],
+      "outputs": ["A decision request"],
+      "stopsForUser": false,
+      "usesTool": false
+    },
+    {
+      "id": "approve",
+      "type": "approval",
+      "owners": ["alex"],
+      "title": "Alex decides",
+      "summary": "No note without a yes",
+      "steps": ["Read the brief.", "Approve a note, or stop here."],
+      "inputs": ["A decision request"],
+      "outputs": ["A yes or a stop"],
+      "stopsForUser": true,
+      "usesTool": false
+    },
+    {
+      "id": "held",
+      "type": "early-exit",
+      "owners": [],
+      "title": "No note",
+      "summary": "The lead stays internal",
+      "steps": ["Nothing is sent."],
+      "inputs": ["A stop from Alex"],
+      "outputs": ["No outreach"],
+      "stopsForUser": false,
+      "usesTool": false
+    },
+    {
+      "id": "draft",
+      "type": "task",
+      "owners": ["writer"],
+      "title": "Draft the note",
+      "summary": "Still unsent",
+      "steps": ["Write a short note from the brief.", "Leave it unsent."],
+      "inputs": ["Approval from Alex"],
+      "outputs": ["A draft note"],
+      "stopsForUser": false,
+      "usesTool": false
+    },
+    {
+      "id": "send",
+      "type": "approval",
+      "owners": ["alex"],
+      "title": "Alex sends or revises",
+      "summary": "The last check",
+      "steps": ["Read the draft.", "Send it, or ask for changes."],
+      "inputs": ["A draft note"],
+      "outputs": ["A sent note or a revision"],
+      "stopsForUser": true,
+      "usesTool": false
+    }
+  ],
+  "edges": [
+    { "from": "start", "to": "find", "label": "a search", "kind": "always" },
+    { "from": "find", "to": "brief", "label": "strong leads", "kind": "only-when" },
+    { "from": "brief", "to": "surface", "label": "sourced brief", "kind": "always" },
+    { "from": "surface", "to": "approve", "label": "decision request", "kind": "always" },
+    { "from": "approve", "to": "held", "label": "not yet", "kind": "only-when" },
+    { "from": "approve", "to": "draft", "label": "approved", "kind": "only-when" },
+    { "from": "draft", "to": "send", "label": "draft note", "kind": "always" },
+    { "from": "send", "to": "draft", "label": "changes", "kind": "asks-and-waits" }
+  ]
+}
