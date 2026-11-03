@@ -1,0 +1,107 @@
+{
+  "id": "research",
+  "title": "Research brief",
+  "description": "A question goes to Research, which checks the web and recent reports, then writes a sourced brief. The reply waits for Alex before anything is sent.",
+  "people": [
+    { "id": "alex", "name": "Alex", "role": "Approver", "color": "#E7C27A" }
+  ],
+  "bots": [
+    { "id": "research", "name": "Research", "color": "#59BE77", "avatar": "/avatars/research.png", "role": "Writes sourced briefs", "icon": "book" },
+    { "id": "chief-of-staff", "name": "Chief of Staff", "color": "#55B5A3", "avatar": "/avatars/chief.png", "role": "Coordinates the team", "icon": "compass" }
+  ],
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "owners": [],
+      "title": "Question arrives",
+      "summary": "Someone needs a sourced answer.",
+      "steps": ["A question arrives.", "Hand it to Research."],
+      "inputs": ["A question"],
+      "outputs": ["A research run"],
+      "stopsForUser": false,
+      "usesTool": false
+    },
+    {
+      "id": "search",
+      "type": "task",
+      "owners": ["research"],
+      "title": "Check the sources",
+      "summary": "Web and recent reports",
+      "steps": ["Search the web.", "Read recent reports.", "Keep the sources with the notes."],
+      "inputs": ["The question"],
+      "outputs": ["Source notes"],
+      "stopsForUser": false,
+      "usesTool": true,
+      "tools": ["Web", "News and reports"]
+    },
+    {
+      "id": "brief",
+      "type": "task",
+      "owners": ["research"],
+      "title": "Write the brief",
+      "summary": "A short sourced answer",
+      "steps": ["Write the brief.", "Cite the sources.", "Hand it to the Chief of Staff."],
+      "inputs": ["Source notes"],
+      "outputs": ["A sourced brief"],
+      "stopsForUser": false,
+      "usesTool": false
+    },
+    {
+      "id": "reply",
+      "type": "task",
+      "owners": ["chief-of-staff"],
+      "title": "Prepare the reply",
+      "summary": "Does not send it yet",
+      "steps": ["Turn the brief into a reply.", "Hold it until Alex approves."],
+      "inputs": ["The sourced brief"],
+      "outputs": ["A reply draft"],
+      "stopsForUser": false,
+      "usesTool": false
+    },
+    {
+      "id": "approve",
+      "type": "approval",
+      "owners": ["alex"],
+      "title": "Alex reviews the reply",
+      "summary": "Nothing goes out before this",
+      "steps": ["Read the reply.", "Send it, or hold it."],
+      "inputs": ["A reply draft"],
+      "outputs": ["A send or a hold"],
+      "stopsForUser": true,
+      "usesTool": false
+    },
+    {
+      "id": "held",
+      "type": "early-exit",
+      "owners": [],
+      "title": "Reply held",
+      "summary": "Stays internal",
+      "steps": ["The reply is not sent."],
+      "inputs": ["A hold from Alex"],
+      "outputs": ["No external send"],
+      "stopsForUser": false,
+      "usesTool": false
+    },
+    {
+      "id": "sent",
+      "type": "output",
+      "owners": [],
+      "title": "Reply sent",
+      "summary": "Alex released it",
+      "steps": ["The requester has the answer."],
+      "inputs": ["Approval from Alex"],
+      "outputs": ["A sent reply"],
+      "stopsForUser": false,
+      "usesTool": false
+    }
+  ],
+  "edges": [
+    { "from": "start", "to": "search", "label": "question", "kind": "always" },
+    { "from": "search", "to": "brief", "label": "source notes", "kind": "always" },
+    { "from": "brief", "to": "reply", "label": "sourced brief", "kind": "always" },
+    { "from": "reply", "to": "approve", "label": "reply draft", "kind": "always" },
+    { "from": "approve", "to": "held", "label": "not yet", "kind": "only-when" },
+    { "from": "approve", "to": "sent", "label": "approved", "kind": "only-when" }
+  ]
+}
